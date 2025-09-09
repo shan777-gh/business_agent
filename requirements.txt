@@ -1,2 +1,4 @@
-pip install gradio
-python app.py
+gradio>=4.0.0
+langflow
+requests
+chromadb
