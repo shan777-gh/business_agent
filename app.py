@@ -1,22 +1,19 @@
 import gradio as gr
-from langflow import load_flow
+from langflow.load import run_flow_from_json
 
-# Load your Langflow flow
-flow = load_flow("Business agent.json")
+# Run the Langflow JSON flow
+def run_agent(message, history: list[dict[str, str]], system_message):
+    # Feed user input into the flow
+    result = run_flow_from_json(
+        "Business agent.json",
+        inputs={"user_input": message}
+    )
+    # Get the response from the flow output
+    return result["output"]
 
-# Function to process user messages
-def respond(message, history: list[dict[str, str]], system_message):
-    # Run Langflow flow with user input
-    result = flow.run(inputs={"user_input": message})
-
-    # Get output from Langflow
-    response = result["output"]
-
-    return response
-
-# ChatInterface wrapper
+# Gradio ChatInterface
 chatbot = gr.ChatInterface(
-    respond,
+    fn=run_agent,
     type="messages",
     additional_inputs=[
         gr.Textbox(value="You are a business assistant.", label="System message"),
